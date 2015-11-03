@@ -221,7 +221,12 @@
 		allProducts = [[self.account.products allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"productID" ascending:NO] autorelease]]];
 	}
 	self.products = allProducts;
-	self.visibleProducts = [allProducts filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^ (id obj, NSDictionary *bindings) { return (BOOL)![[(Product *)obj hidden] boolValue]; }]];	
+  self.visibleProducts = [[allProducts filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^ (id obj, NSDictionary *bindings) {
+      return (BOOL)![[(Product *)obj hidden] boolValue];
+  }]] sortedArrayUsingComparator:^ NSComparisonResult(id lhs, id rhs){
+    Product *p1 = lhs, *p2 = rhs;
+     return [p1.SKU compare:p2.SKU];
+  }];
 	[self reloadTableView];
 }
 
